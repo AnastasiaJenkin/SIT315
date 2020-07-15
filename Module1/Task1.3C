@@ -1,0 +1,70 @@
+/*
+  DigitalReadSerial
+
+  Reads a digital input on pin 2, prints the
+  result to the serial monitor
+
+  This example code is in the public domain.
+*/
+
+//int sensorState = 0;
+const int motionSensor = 2;
+const int soundTrigger = 4;
+const int soundEcho = 3;
+const int led1Pin = 7;
+const int led2Pin = 8;
+
+//Intercept Service Routine Motion Sensor
+void motionInterrupt()
+{
+  if (digitalRead(motionSensor) == HIGH) {
+    digitalWrite(led1Pin, HIGH);
+  	Serial.println("Motion Sensor Activated!");
+  }
+  else { 
+    digitalWrite(led1Pin, LOW);
+  }
+}
+
+//Intercept Service Routine Sound Sensor
+void soundInterrupt()
+{
+  if (readUltrasonicDistance(soundTrigger,soundEcho) < 200) {
+    digitalWrite(led2Pin, HIGH);
+  	Serial.println("Ultrasonic Sensor Activated!");
+  }
+  else { 
+    digitalWrite(led2Pin, LOW);
+  }
+}
+
+void setup()
+{
+  pinMode(motionSensor, INPUT);
+  pinMode(soundTrigger, OUTPUT);
+  pinMode(soundEcho, INPUT);
+  pinMode(led1Pin, OUTPUT);
+  pinMode(led2Pin, OUTPUT);
+  Serial.begin(9600);
+    
+  attachInterrupt (digitalPinToInterrupt (soundEcho), soundInterrupt, CHANGE);
+  attachInterrupt (digitalPinToInterrupt (motionSensor), motionInterrupt, CHANGE);
+  
+}
+
+void loop()
+{
+  //loop doing nothing
+}
+
+long readUltrasonicDistance(int soundTrigger, int soundEcho)
+{
+  pinMode(soundTrigger, OUTPUT);  // Clear the trigger
+  digitalWrite(soundTrigger, LOW);
+  delayMicroseconds(10);
+  digitalWrite(soundTrigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(soundTrigger, LOW);
+  pinMode(soundEcho, INPUT);
+  return pulseIn(soundEcho, HIGH) /59;
+}
