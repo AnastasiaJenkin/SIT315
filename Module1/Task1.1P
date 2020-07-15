@@ -1,0 +1,30 @@
+/*
+  DigitalReadSerial
+
+  Reads a digital input on pin 2, prints the
+  result to the serial monitor
+
+  This example code is in the public domain.
+*/
+
+int sensorState = 0;
+
+void setup()
+{
+  pinMode(2, INPUT);
+  pinMode(7, OUTPUT);
+  Serial.begin(9600);
+
+}
+
+void loop()
+{
+  sensorState = digitalRead(2);
+  if (sensorState == HIGH) {
+    digitalWrite(7, HIGH);
+    Serial.println("Sensor Activated!");
+  } else {
+    digitalWrite(7, LOW);
+  }
+  delay(10);
+}
